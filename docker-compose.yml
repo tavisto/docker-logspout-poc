@@ -1,5 +1,5 @@
 logspout:
-  image: logspout-logstash
+  build: logspout/ 
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
   ports:
@@ -11,6 +11,8 @@ logspout:
     - logstash:logstash
 
 elasticsearch:
+  environment:
+    LOGSPOUT: ignore
   image: elasticsearch
   ports:
     - "9200:9200"
@@ -18,7 +20,7 @@ elasticsearch:
   mem_limit: 300M
 
 logstash:
-  image: logstash
+  build: logstash/
   ports:
     - "5000:5000"
     - "5000:5000/udp"
@@ -26,13 +28,13 @@ logstash:
     # otherwise logstash will keep sending its own logs to itself over and
     # over... not fun
     LOGSPOUT: ignore
-  command: -f /tmp/foo/logstash.sample.conf
-  volumes:
-    - /Users/taitken/src/poc/docker-logspout:/tmp/foo
+  command: -f /etc/logstash.d/sample.conf
   links:
     - elasticsearch:elasticsearch
 
 kibana:
+  environment:
+    LOGSPOUT: ignore
   image: kibana
   ports:
     - "5601:5601"
