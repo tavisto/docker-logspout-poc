@@ -1,3 +1,3 @@
 FROM logstash
-RUN mkdir /etc/logstash.d
-COPY *.conf /etc/logstash.d/
+COPY *.conf /etc/logstash/conf.d/
+RUN chmod 755 /etc/logstash/conf.d/*
